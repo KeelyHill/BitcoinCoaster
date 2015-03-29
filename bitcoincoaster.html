@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bitcoin Coaster</title>
+        <meta name="author" content="Keely Hill">
+        <meta name="description" content="A visual representation of the current Bitcoin price trend... as a Bitcoin on a roller coaster.">
+        <meta name="keywords" content="Bitcoin,Bitcoin Roller Coaster,Roller Coaster,Bitcoin price tracker,Keely Hill,Yeelk">
+        <style type="text/css">
+            html {
+                background: #AED581; /*red: EF9A9A*/
+            }
+
+            #container {
+                position: relative;
+                margin: auto;
+                margin-top: 2em;
+
+                font-family: "Courier New", Courier, monospace;
+                text-align: center;
+            }
+
+            #arrow {
+                border-radius: 20em;
+                width: 20em;
+                height: 20em;
+
+                 /*Prevent Highlighting */
+                -webkit-user-select: none; /* Chrome/Safari */        
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* IE10+ */
+
+                /* Rules below not implemented in browsers yet */
+                -o-user-select: none;
+                user-select: none;
+            }
+
+            #current {
+                font-size: 3em;
+                margin-bottom: 0.8em;
+            }
+
+            #footer, #footer *{
+                color: #333;
+                margin-top: 7em;
+                line-height: 1.5em;
+            }
+
+            @media screen and (max-width: 1000pt) {
+                html {
+                    font-size: 1.9rem;
+                }
+            }
+        </style>
+
+        <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+        <script>
+        $(function() {
+            jQuery.fn.rotate = function(degrees) {
+            $(this).css({'-webkit-transform' : 'rotate('+ degrees +'deg)',
+                         '-moz-transform' : 'rotate('+ degrees +'deg)',
+                         '-ms-transform' : 'rotate('+ degrees +'deg)',
+                         'transform' : 'rotate('+ degrees +'deg)'});
+            return $(this);
+            };
+
+            var deg2rad = Math.PI/180;
+            var rad2deg = 180/Math.PI;
+
+            var arrow = $('#arrow');
+
+            var old = 0;
+            var latest = 0;
+
+            function setLatest(newLate) {
+                latest = newLate;
+                $('#current').text(latest);
+                rotation = rad2deg * Math.atan((old - latest) / 20);
+                arrow.rotate(rotation);
+                if (rotation < 0)
+                    $('html').css("background", "#AED581");
+                else
+                    $('html').css("background", "#EF9A9A");
+
+            }
+
+            function getAndSetRotation() {
+                $.get("https://api.bitcoinaverage.com/ticker/USD/", function(data) {
+                    old = data['24h_avg'];
+                    $('#old').text(old);
+                    setLatest(data['last']);
+                }, 'JSON');
+            }
+
+            getAndSetRotation();
+            window.setInterval(function(){ getAndSetRotation(); }, 160 * 1000);
+        });
+    </script>
+    </head>
+    <body>
+    	<audio preload autoplay loop style="display:none;">
+  		<source src="coaster.mp3" type="audio/mpeg">
+ 		Your browser does not support the audio tag.
+	</audio>
+        <div id='container'>
+            <h1>Bitcoin Coaster</h1>
+            <div id='old' title="24 Hour Average">...</div>
+            <div id='current' title="Current Price USD, updated every 2 minutes">...</div>
+            <img id="arrow" src="bitcoin.gif" width='300'/>
+            <div id="footer">
+                Created by <a href='http://keelyhill.com'>Keely Hill (Yeelk)</a><br/>
+                API provided by <a href="https://bitcoinaverage.com/">BitcoinAverage Price Index</a><br/>
+                Inspired by: /u/rafalfreeman and /u/Late_To_Parties on reddit
+            </div>
+        </div>
+    <body>
+</html>
