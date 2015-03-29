@@ -1,4 +1,4 @@
-# BitcoinCoaster
+# Bitcoin Coaster
 Shows the movement of Bitcoin vs USD with a Bitcoin roller coaster gif.
 
 For a demo see [here](http://experiments.keelyhill.com/bitcoin).
